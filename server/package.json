@@ -3,17 +3,24 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "start-dev": "nodemon app.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "5.0.0-alpha.7",
     "express-winston": "^3.1.0",
+    "jsonwebtoken": "^8.5.1",
     "mysql": "^2.17.1",
+    "mysql2": "^1.6.5",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
     "routes": "^2.1.0",
+    "sequelize": "^5.8.6",
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "nodemon": "^1.19.0"
   }
 }
