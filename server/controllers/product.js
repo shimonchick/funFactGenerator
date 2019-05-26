@@ -2,37 +2,37 @@ const Product = require('../models/Product');
 const productModel = new Product();
 
 module.exports.create = function (req, res) {
-    const {sellerId, name, price, description} = req.body;
-    if (sellerId == null || name == null || price == null || description == null) {
-        res.status(400).send(`Provide sellerId, name, price and description for the product`);
+    const {name, price, description} = req.body;
+
+    if (name == null || price == null || description == null) {
+        res.status(400).send(`Provide name, price and description for the product`);
+        return;
     }
-    productModel.create({ sellerId: sellerId, name: name, price: price, description: description})
+    productModel.create(req.user.id, name, price, description)
         .catch(err => {
             console.log(err);
             res.status(500).send(err);
         })
-        .then(() => {
-            res.status(200).send("OK");
+        .then((productId) => {
+            // console.log("productId: " + JSON.stringify(productId));
+            res.setHeader('Location', `/product?id=${productId}`);
+            res.status(201).send("OK");
         });
 
 };
-module.exports.read = function (req, res) {
+module.exports.readAll = function (req, res) {
     //Priority of properties most to least: id, name, description, price
     let productPromise;
-    if(req.query.id != null){
-        productPromise = productModel.get({id: req.query.id});
-    }
-    else if(req.query.name != null){
-        productPromise = productModel.get({name: req.query.name});
-    }
-    else if(req.query.description != null){
-        productPromise = productModel.get({description: req.query.description});
-    }
-    else if(req.query.price != null){
-        productPromise = productModel.get({price: req.query.price});
-    }
-    else{
-        res.status(400).send("No product query properties specified");
+    if (req.query.id != null) {
+        productPromise = productModel.getAll({id: req.query.id});
+    } else if (req.query.name != null) {
+        productPromise = productModel.getAll({name: req.query.name});
+    } else if (req.query.description != null) {
+        productPromise = productModel.getAll({description: req.query.description});
+    } else if (req.query.price != null) {
+        productPromise = productModel.getAll({price: req.query.price});
+    } else {
+        productPromise = productModel.getAll();
     }
     productPromise
         .catch(err => {
@@ -43,6 +43,21 @@ module.exports.read = function (req, res) {
             res.status(200).send(product);
         });
 };
+module.exports.read = function (req, res) {
+    if (req.query.id != null) {
+        productModel.get(req.query.id)
+            .catch(err => {
+                console.log(err);
+                res.status(500).send(err);
+            })
+            .then((product) => {
+                res.status(200).send(product);
+            });
+    } else {
+        res.status(404).send("Could not find a product with this id");
+    }
+};
+
 
 module.exports.update = function (req, res) {
     const {id, description, name, price} = req.body;

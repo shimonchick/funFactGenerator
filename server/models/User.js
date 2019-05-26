@@ -4,6 +4,7 @@ module.exports = class User {
 
     constructor() {
         this.connection = mysql.createConnection({
+            multipleStatements: true,
             host: 'localhost',
             user: 'root',
             password: '',

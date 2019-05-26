@@ -7,29 +7,35 @@ const passportJWT = require('passport-jwt');
 const jwt = require('jsonwebtoken');
 
 const User = require('./models/User');
+
 const user = new User();
 
-const productRouter = require('./routes/product');
 const app = express();
 const port = 3000;
+
+const config = require('./config');
 
 // ExtractJwt to help extract the token
 let ExtractJwt = passportJWT.ExtractJwt;
 // JwtStrategy which is the strategy for the authentication
 let JwtStrategy = passportJWT.Strategy;
-let jwtOptions = {};
-jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-//TODO : get the secretOrKey from environment variable
-jwtOptions.secretOrKey = 'A+F9kTyWIOqWUcf8CuTOcu5GicVun9y4qYrgooTbYtHWJac1J8hCmC4PHzyER7rsX9/hv4mL7uBzJ+jwN3rL6A==';
+let jwtOptions = {
+    secretOrKey: config.secretOrKey,
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    passReqToCallback: true,
+};
 
-let strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
+let strategy = new JwtStrategy(jwtOptions, function (req, jwt_payload, next) {
     console.log('payload received', jwt_payload);
-    let user = user.get({id: jwt_payload.id});
-    if (user) {
-        next(null, user);
-    } else {
-        next(null, false);
-    }
+    user.get({id: jwt_payload.id})
+        .catch(err =>{
+            console.log(err);
+            next(null, false);
+        })
+        .then(currentUser => {
+            req.user = currentUser;
+            next(null, currentUser);
+        });
 });
 
 // use the strategy
@@ -61,11 +67,9 @@ app.use(expressWinston.errorLogger({
     )
 }));
 
-
-app.use('/product', productRouter);
-
 app.get('/protected', passport.authenticate('jwt', { session: false }), function(req, res) {
-    res.json({ msg: 'Congrats! You are seeing this because you are authorized'});
+    console.log(req.user);
+    res.json({usr: req.user, msg: 'Congrats! You are seeing this because you are authorized'});
 });
 
 // register route
@@ -73,7 +77,7 @@ app.post('/register', function (req, res, next) {
     const {name, password} = req.body;
     user.create(name, password)
         .then(user =>
-            res.json({user, msg: 'account created successfully'})
+            res.status(201).json({user, msg: 'account created successfully'})
         )
         .catch(err => {
             console.log(err);
@@ -85,7 +89,7 @@ app.post('/login', async function (req, res) {
     const {name, password} = req.body;
     console.log("name: " + name +  "password: " + password);
     if (name && password) {
-        // we get the currentUser with the name and save the resolved promise
+        // we getAll the currentUser with the name and save the resolved promise
         //returned
         let currentUser = await user.get({name: name});
         if (currentUser == null) {
@@ -102,5 +106,15 @@ app.post('/login', async function (req, res) {
         }
     }
 });
+
+const productController = require('./controllers/product');
+
+app.get('/products', productController.readAll);
+
+app.get('/product', productController.read);
+app.post('/product', passport.authenticate("jwt", {session: false}), productController.create);
+app.put('/product', passport.authenticate("jwt", {session: false}), productController.update);
+app.delete('/product', passport.authenticate("jwt", {session: false}), productController.delete);
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
