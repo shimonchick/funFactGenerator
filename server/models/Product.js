@@ -24,7 +24,7 @@ module.exports = class Product {
 
     }
 
-    get(id){
+    get(id) {
         return new Promise(((resolve) => {
             this.connection.query('SELECT * FROM Products WHERE id = ?', id, function (err, rows, fields) {
                 if (err) throw err;
@@ -33,39 +33,34 @@ module.exports = class Product {
 
         }));
     }
-    getAll(query = null) {
-        return new Promise(((resolve) => {
-            if (query && query.name) {
-                this.connection.query('SELECT * FROM Products WHERE name = ?', query.name, function (err, rows, fields) {
-                    if (err) throw err;
-                    resolve(rows || null);
-                })
-            } else if (query && query.id) {
-                this.connection.query('SELECT * FROM Products WHERE id = ?', query.id, function (err, rows, fields) {
-                    if (err) throw err;
-                    resolve(rows || null);
-                })
-            } else if (query && query.price) {
-                this.connection.query('SELECT * FROM Products WHERE price = ?', query.price, function (err, rows, fields) {
-                    if (err) throw err;
-                    resolve(rows || null);
-                })
-            } else if (query && query.description) {
-                this.connection.query('SELECT * FROM Products WHERE description LIKE %?%', query.description,
-                    function (err, rows, fields) {
-                        if (err) throw err;
-                        resolve(rows || null);
-                });
 
-            } else {
-                this.connection.query('SELECT * FROM Products ',
-                    function (err, rows, fields) {
-                        if (err) throw err;
-                        resolve(rows || null);
-                    });
+    getAll(query) {
+        return new Promise((resolve) => {
+            let sql = 'SELECT * FROM Products';
+            console.log("query: " + query);
+            if (query) {
+                const {name, description, price, page, limit} = query;
+                console.log("page: " + page + "limit: " + limit);
+                if (name) {
+                    sql += ' WHERE name = ' + this.connection.escape(name);
+                } else if (description) {
+                    sql += ' WHERE description LIKE %' + this.connection.escape(description) + '%';
+                } else if (price) {
+                    sql += ' WHERE price = ' + this.connection.escape(price);
+                }
 
+                if (page && limit) {
+                    const limitNum = parseInt(limit.trim());
+                    const pageNum = parseInt(page.trim());
+                    sql += ` LIMIT ${pageNum * limitNum},${limitNum}` ;
+                }
             }
-        }));
+            const mysqlQuery = this.connection.query(sql, function (err, rows, fields) {
+                if (err) throw err;
+                resolve(rows || null);
+            });
+            console.log(mysqlQuery.sql);
+        });
     }
 
     create(sellerId, name, price, description) {
@@ -98,10 +93,11 @@ module.exports = class Product {
                 })
         }))
     }
-    delete(id){
-        return new Promise((resolve, reject)=>{
-            this.connection.query('DELETE FROM Products WHERE id = ?', id, function(err, results, fields){
-                if(err) reject(err);
+
+    delete(id) {
+        return new Promise((resolve, reject) => {
+            this.connection.query('DELETE FROM Products WHERE id = ?', id, function (err, results, fields) {
+                if (err) reject(err);
                 resolve();
             })
         })

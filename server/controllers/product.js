@@ -21,20 +21,8 @@ module.exports.create = function (req, res) {
 
 };
 module.exports.readAll = function (req, res) {
-    //Priority of properties most to least: id, name, description, price
-    let productPromise;
-    if (req.query.id != null) {
-        productPromise = productModel.getAll({id: req.query.id});
-    } else if (req.query.name != null) {
-        productPromise = productModel.getAll({name: req.query.name});
-    } else if (req.query.description != null) {
-        productPromise = productModel.getAll({description: req.query.description});
-    } else if (req.query.price != null) {
-        productPromise = productModel.getAll({price: req.query.price});
-    } else {
-        productPromise = productModel.getAll();
-    }
-    productPromise
+    const {name, description, price, limit, page} = req.query;
+    productModel.getAll({name: name, description: description, price: price, page: page, limit: limit})
         .catch(err => {
             console.log(err);
             res.status(500).send(err);
