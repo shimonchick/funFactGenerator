@@ -5,7 +5,7 @@ const winston = require('winston'); // for transports.Console
 const passport = require('passport');
 const passportJWT = require('passport-jwt');
 const jwt = require('jsonwebtoken');
-
+const cors = require('cors');
 const User = require('./models/User');
 
 const user = new User();
@@ -41,6 +41,32 @@ let strategy = new JwtStrategy(jwtOptions, function (req, jwt_payload, next) {
 // use the strategy
 passport.use(strategy);
 
+
+app.use(function (req, res, next) {
+
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200','always');
+
+    // res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+
+    // Request headers you wish to allow
+    // res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+    // Pass to next layer of middleware
+    next();
+});
+
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -111,10 +137,10 @@ const productController = require('./controllers/product');
 
 app.get('/products', productController.readAll);
 
-app.get('/product', productController.read);
-app.post('/product', passport.authenticate("jwt", {session: false}), productController.create);
-app.put('/product', passport.authenticate("jwt", {session: false}), productController.update);
-app.delete('/product', passport.authenticate("jwt", {session: false}), productController.delete);
+app.get('/products/:id', productController.read);
+app.post('/products', /*passport.authenticate("jwt", {session: false}), */productController.create);
+app.put('/products', /*passport.authenticate("jwt", {session: false}), */productController.update);
+app.delete('/products/:id', /*passport.authenticate("jwt", {session: false}), */productController.delete);
 
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

@@ -32,8 +32,8 @@ module.exports.readAll = function (req, res) {
         });
 };
 module.exports.read = function (req, res) {
-    if (req.query.id != null) {
-        productModel.get(req.query.id)
+    if (req.params.id != null) {
+        productModel.get(req.params.id)
             .catch(err => {
                 console.log(err);
                 res.status(500).send(err);
@@ -58,13 +58,13 @@ module.exports.update = function (req, res) {
             res.status(500).send(err);
         })
         .then(() => {
-            res.status(200).send("OK");
+            res.sendStatus(200);//.send("OK");
         });
 
 };
 
 module.exports.delete = function (req, res) {
-    const id = req.body.id;
+    const id = req.params.id;
     if (id == null) {
         res.status(400).send("Provide id of the product to be deleted");
     }

@@ -25,9 +25,9 @@ module.exports = class Product {
     }
 
     get(id) {
-        return new Promise(((resolve) => {
+        return new Promise(((resolve, reject) => {
             this.connection.query('SELECT * FROM Products WHERE id = ?', id, function (err, rows, fields) {
-                if (err) throw err;
+                if (err) reject(err);
                 resolve(rows[0] || null);
             })
 
@@ -35,7 +35,7 @@ module.exports = class Product {
     }
 
     getAll(query) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             let sql = 'SELECT * FROM Products';
             console.log("query: " + query);
             if (query) {
@@ -56,7 +56,7 @@ module.exports = class Product {
                 }
             }
             const mysqlQuery = this.connection.query(sql, function (err, rows, fields) {
-                if (err) throw err;
+                if (err) reject(err);
                 resolve(rows || null);
             });
             console.log(mysqlQuery.sql);
@@ -82,11 +82,11 @@ module.exports = class Product {
         }));
     }
 
-    update(id, description, name, price) {
+    update({id, description, name, price}) {
         return new Promise(((resolve, reject) => {
             const updatedAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
             this.connection.query('UPDATE Products SET name = ?, price = ?, description = ?, updatedAt = ? WHERE id = ?',
-                [name, price, description, id],
+                [name, price, description, updatedAt, id],
                 function (err, results, fields) {
                     if (err) reject(err);
                     resolve();
