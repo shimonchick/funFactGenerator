@@ -16,5 +16,7 @@ export class ProductsComponent implements OnInit {
   ngOnInit() {
     this.products = this.productService.getProducts(0, 5);
   }
-
+  onLike(product: Product) {
+    this.productService
+  }
 }

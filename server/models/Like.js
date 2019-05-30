@@ -3,7 +3,6 @@ const mysql = require('mysql');
 module.exports = class Product {
     constructor() {
         this.connection = mysql.createConnection({
-            insecureAuth: true,
             multipleStatements: true,
             host: 'localhost',
             user: 'root',
@@ -12,17 +11,27 @@ module.exports = class Product {
         });
         this.connection.connect();
 
-        this.connection.query('CREATE TABLE IF NOT EXISTS `Products`(' +
-            '`id` INTEGER NOT NULL auto_increment,' +
-            '`name` VARCHAR(64) UNIQUE,' +
-            '`description` VARCHAR(255),' +
-            '`price` FLOAT NOT NULL,' +
-            '`sellerId` INTEGER NOT NULL,' +
-            '`createdAt` DATETIME NOT NULL,' +
-            '`updatedAt` DATETIME NOT NULL,' +
-            'PRIMARY KEY (`id`),' +
-            'FOREIGN KEY(sellerId) REFERENCES Users(id))');
+        this.connection.query('CREATE TABLE IF NOT EXISTS `Likes`(' +
+            '`productId` INTEGER NOT NULL auto_increment,' +
+            '`userId` INTEGER NOT NULL,' +
+            'FOREIGN KEY(userId) REFERENCES Users(id)' +
+            'FOREIGN KEY(productId) REFERENCES Product(id) )');
 
+    }
+
+    toggle(userId, productId) {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                `IF NOT EXISTS ( SELECT 1 FROM Users WHERE productId = ? AND userId = ? ' )
+                    INSERT INTO Likes (productId, userId) VALUES (?, ?);
+                ELSE
+                    DELETE FROM Likes where productId = ? and userId = ?;
+                `
+            [productId, userId], function(err, rows, fields) {
+                if (err) reject(err);
+                // resolve(rows[0] || null);
+            })
+        })
     }
 
     get(id) {
@@ -106,3 +115,4 @@ module.exports = class Product {
 
 
 };
+

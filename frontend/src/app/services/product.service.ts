@@ -33,7 +33,8 @@ export class ProductService {
 
   async setProduct(product: Product) {
     console.log(product);
-    return await this.http.put<Product>(this.productUrl, product, {...httpOptions, ...textResponseType}).toPromise();
+    const requestType = product.id !== undefined ? 'put' : 'post';
+    return await this.http[requestType]<Product>(this.productUrl, product, {...httpOptions, ...textResponseType}).toPromise();
   }
 
   async deleteProduct(product: Product) {

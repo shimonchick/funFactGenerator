@@ -1,3 +1,6 @@
+<div>
+    <a mat-raised-button color="primary" routerLink="/create">Create Product</a>
+</div>
 <div fxLayout="row wrap" fxLayoutAlign="space-around center" #container id="container">
     <div class="list-item" *ngFor="let product of products | async" fxFlex="25%"
         fxFlex.md="33%" fxFlex.sm="50%" fxFlex.xs="100%" [routerLink]="['/products', product.id]">
@@ -15,7 +18,9 @@
 
             </mat-card-actions>
             <mat-card-footer>
-                Footer
+                <a mat-icon-button (click)="onLike(product)">
+                    <mat-icon class="mat-18">like</mat-icon>
+                </a>
             </mat-card-footer>
         </mat-card>
     </div>

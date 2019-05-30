@@ -13,16 +13,22 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { ProductDetailsComponent } from './product-details/product-details.component';
 import { FormsModule } from '@angular/forms';
+import { RegisterComponent } from './register/register.component';
+import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
   { path: '', component: ProductsComponent },
-  { path: ':id', component: ProductDetailsComponent}
+  { path: ':id', component: ProductDetailsComponent },
+  { path: 'create', component: ProductDetailsComponent }
 ];
+
 @NgModule({
   declarations: [
     AppComponent,
     ProductsComponent,
-    ProductDetailsComponent
+    ProductDetailsComponent,
+    RegisterComponent,
+    LoginComponent
   ],
   imports: [
     CommonModule,

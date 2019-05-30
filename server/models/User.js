@@ -7,7 +7,7 @@ module.exports = class User {
             multipleStatements: true,
             host: 'localhost',
             user: 'root',
-            password: '',
+            password: 'password',
             database: 'nodejs'
         });
         this.connection.connect();

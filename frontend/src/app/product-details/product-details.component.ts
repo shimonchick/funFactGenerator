@@ -12,16 +12,23 @@ import { routerNgProbeToken } from '@angular/router/src/router_module';
 })
 export class ProductDetailsComponent implements OnInit {
 
-  product: Product = new Product();
+  product = new Product();
+
   constructor(private route: ActivatedRoute,
-              private productService: ProductService,
-              private router: Router) { }
+    private productService: ProductService,
+    private router: Router) {
+    console.log(this.product);
+  }
 
   ngOnInit() {
+    console.log(this.product);
+    console.log(this.product == null);
     const id = this.route.snapshot.paramMap.get('id');
-    this.productService.getProduct(id).then(product => {
-      this.product = product;
-    });
+    if (!id) {
+      this.productService.getProduct(id).then(product => {
+        this.product = product;
+      });
+    }
   }
 
   async onSubmit() {
@@ -30,7 +37,7 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   async delete(product: Product) {
-    await this.productService.deleteProduct(product)
+    await this.productService.deleteProduct(product);
     await this.router.navigateByUrl('/');
   }
 

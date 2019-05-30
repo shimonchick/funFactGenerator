@@ -1,17 +1,25 @@
-<div>
-  <h1>Product Form</h1>
-  <div *ngIf="product.id">
+<div class="example-container" fxLayout="column" fxLayoutAlign="center center">
+  <div style="width: unset"><h1>Product Form</h1></div>
+  <div *ngIf="product?.id">
     <span>Editing id: {{product.id}}</span>
   </div>
-  <form (ngSubmit)="onSubmit()">
+  <form (ngSubmit)="onSubmit()" fxLayout="column" fxLayoutAlign="center center">
     <mat-form-field>
       <input matInput placeholder="Name" name="name" [(ngModel)]="product.name" required />
     </mat-form-field>
 
-    <button type="submit" mat-button color="primary">Submit</button>
+    <mat-form-field>
+      <textarea matInput placeholder="Description" name="description" [(ngModel)]="product.description" required ></textarea>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Price" name="price" [(ngModel)]="product.price" required />
+    </mat-form-field>
+
+    <button type="submit" mat-raised-button color="primary">Submit</button>
 
   </form>
 </div>
-<div *ngIf="product.id">
+<div *ngIf="product?.id">
   <button mat-button (click)="delete(product)">Delete Product</button>
 </div>
