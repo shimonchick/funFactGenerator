@@ -8,7 +8,7 @@ module.exports = class User {
             host: 'localhost',
             user: 'root',
             password: 'password',
-            database: 'nodejs'
+            database: 'test'
         });
         this.connection.connect();
 

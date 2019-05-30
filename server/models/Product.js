@@ -3,12 +3,11 @@ const mysql = require('mysql');
 module.exports = class Product {
     constructor() {
         this.connection = mysql.createConnection({
-            insecureAuth: true,
             multipleStatements: true,
             host: 'localhost',
             user: 'root',
             password: 'password',
-            database: 'nodejs'
+            database: 'test'
         });
         this.connection.connect();
 
@@ -37,23 +36,26 @@ module.exports = class Product {
 
     getAll(query) {
         return new Promise((resolve, reject) => {
-            let sql = 'SELECT * FROM Products';
+            let sql = `select Products.name, Products.id, Products.price, count(Likes.productId) as likes
+                        from Likes
+                        right join Products on Products.id = Likes.productId
+                        group by Products.id `; // returns the product with some number of likes attatched
             console.log("query: " + query);
             if (query) {
-                const {name, description, price, page, limit} = query;
+                const { name, description, price, page, limit } = query;
                 console.log("page: " + page + "limit: " + limit);
-                if (name) {
-                    sql += ' WHERE name = ' + this.connection.escape(name);
-                } else if (description) {
-                    sql += ' WHERE description LIKE %' + this.connection.escape(description) + '%';
-                } else if (price) {
-                    sql += ' WHERE price = ' + this.connection.escape(price);
-                }
+                // if (name) {
+                //     sql += ' WHERE name = ' + this.connection.escape(name);
+                // } else if (description) {
+                //     sql += ' WHERE description LIKE %' + this.connection.escape(description) + '%';
+                // } else if (price) {
+                //     sql += ' WHERE price = ' + this.connection.escape(price);
+                // }
 
                 if (page && limit) {
                     const limitNum = parseInt(limit.trim());
                     const pageNum = parseInt(page.trim());
-                    sql += ` LIMIT ${pageNum * limitNum},${limitNum}` ;
+                    sql += ` LIMIT ${pageNum * limitNum},${limitNum}`;
                 }
             }
             const mysqlQuery = this.connection.query(sql, function (err, rows, fields) {
@@ -83,7 +85,7 @@ module.exports = class Product {
         }));
     }
 
-    update({id, description, name, price}) {
+    update({ id, description, name, price }) {
         return new Promise(((resolve, reject) => {
             const updatedAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
             this.connection.query('UPDATE Products SET name = ?, price = ?, description = ?, updatedAt = ? WHERE id = ?',

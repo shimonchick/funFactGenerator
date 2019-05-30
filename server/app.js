@@ -7,6 +7,7 @@ const passportJWT = require('passport-jwt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const User = require('./models/User');
+const Like = require('./models/Like');
 
 const user = new User();
 
@@ -141,6 +142,6 @@ app.get('/products/:id', productController.read);
 app.post('/products', /*passport.authenticate("jwt", {session: false}), */productController.create);
 app.put('/products', /*passport.authenticate("jwt", {session: false}), */productController.update);
 app.delete('/products/:id', /*passport.authenticate("jwt", {session: false}), */productController.delete);
-
+app.post('products/:id/like', productController.like)
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

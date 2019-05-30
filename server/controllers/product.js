@@ -1,5 +1,7 @@
 const Product = require('../models/Product');
+const Like = require('../models/Like');
 const productModel = new Product();
+const likeModel = new Like();
 
 module.exports.create = function (req, res) {
     const {name, price, description} = req.body;
@@ -76,5 +78,21 @@ module.exports.delete = function (req, res) {
         .then(() => {
             res.status(200).send("OK");
         });
+};
 
+module.exports.like = function(req, res) {
+    const productId = req.params['productId'];
+    const userId = req.params['userId'];
+    // TODO get the user appropriately
+    if (userId == null || productId == null) {
+        res.status(400).send('Please provide a `productId` and a `userId` in the body');
+    }
+    likeModel.toggle(userId, productId)
+    .catch(err => {
+        console.log(err);
+        res.status(500).send(err);
+    })
+    .then(() => {
+        res.send(200).send("OK");
+    });
 };

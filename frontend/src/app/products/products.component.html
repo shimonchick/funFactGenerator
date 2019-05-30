@@ -11,7 +11,8 @@
             </mat-card-header>
             <!-- <img matCardImage src="Card wide image source"> -->
             <mat-card-content>
-                Text description
+                Text description:
+                {{product | json}}
             </mat-card-content>
             <mat-card-actions align="start">
                 <button mat-button [routerLink]="[product.id]">Action1</button>
