@@ -1,0 +1,17 @@
+<div>
+  <h1>Product Form</h1>
+  <div *ngIf="product.id">
+    <span>Editing id: {{product.id}}</span>
+  </div>
+  <form (ngSubmit)="onSubmit()">
+    <mat-form-field>
+      <input matInput placeholder="Name" name="name" [(ngModel)]="product.name" required />
+    </mat-form-field>
+
+    <button type="submit" mat-button color="primary">Submit</button>
+
+  </form>
+</div>
+<div *ngIf="product.id">
+  <button mat-button (click)="delete(product)">Delete Product</button>
+</div>
