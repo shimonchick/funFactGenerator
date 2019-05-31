@@ -24,9 +24,18 @@ module.exports = class Product {
 
     }
 
+    
+
     get(id) {
         return new Promise(((resolve, reject) => {
-            this.connection.query('SELECT * FROM Products WHERE id = ?', id, function (err, rows, fields) {
+            const sql = `
+            select Products.name, Products.id, Products.price, count(Likes.productId) as likes
+                        from Likes
+                        right join Products on Products.id = Likes.productId
+                        WHERE id = ?
+                        group by Products.id
+            `
+            this.connection.query(sql, id, function (err, rows, fields) {
                 if (err) reject(err);
                 resolve(rows[0] || null);
             })
@@ -39,7 +48,7 @@ module.exports = class Product {
             let sql = `select Products.name, Products.id, Products.price, count(Likes.productId) as likes
                         from Likes
                         right join Products on Products.id = Likes.productId
-                        group by Products.id `; // returns the product with some number of likes attatched
+                        group by Products.id `;      
             console.log("query: " + query);
             if (query) {
                 const { name, description, price, page, limit } = query;
