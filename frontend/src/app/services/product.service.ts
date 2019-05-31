@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Product} from '../models/product';
 
@@ -12,7 +12,7 @@ const textResponseType = {
 @Injectable({
   providedIn: 'root'
 })
-export class ProductService {
+export class ProductService implements OnInit{
   private readonly productUrl = 'http://localhost:3000/products';  // URL to web api
 
   constructor(private http: HttpClient) {
@@ -40,5 +40,12 @@ export class ProductService {
   async deleteProduct(product: Product) {
     const deleteUrl = `${this.productUrl}/${product.id}`;
     return await this.http.delete<Product>(deleteUrl, {...httpOptions, ...textResponseType}).toPromise();
+  }
+
+  ngOnInit(): void {
+    const headerValue = 'Bearer ' + localStorage.getItem('token');
+    console.log(headerValue);
+    httpOptions.headers.append('Authorization', headerValue);
+
   }
 }

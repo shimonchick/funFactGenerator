@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatIconModule, MatToolbarModule, MatGridListModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule } from '@angular/material';
+import { MatIconModule, MatToolbarModule, MatGridListModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatRadioModule } from '@angular/material';
 import { ProductsComponent } from './products/products.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
@@ -12,14 +12,16 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { ProductDetailsComponent } from './product-details/product-details.component';
-import { FormsModule } from '@angular/forms';
-import { RegisterComponent } from './register/register.component';
-import { LoginComponent } from './login/login.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {RegisterComponent} from './register/register.component';
+import {LoginComponent} from './login/login.component';
 
 const routes: Routes = [
   { path: '', component: ProductsComponent },
-  { path: ':id', component: ProductDetailsComponent },
-  { path: 'create', component: ProductDetailsComponent }
+  { path: 'create', component: ProductDetailsComponent },
+  {path: 'register', component: RegisterComponent},
+  {path: 'login', component: LoginComponent},
+  { path: ':id', component: ProductDetailsComponent }
 ];
 
 @NgModule({
@@ -45,6 +47,9 @@ const routes: Routes = [
     FormsModule,
     RouterModule.forRoot(routes),
     HttpClientModule,
+    MatSelectModule,
+    MatRadioModule,
+    ReactiveFormsModule,
     // HttpClientInMemoryWebApiModule.forRoot(
     //   InMemoryDataService, { dataEncapsulation: false }
     // ),
