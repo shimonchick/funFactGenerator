@@ -29,11 +29,14 @@ let strategy = new JwtStrategy(jwtOptions, function (req, jwt_payload, next) {
     console.log('payload received', jwt_payload);
     user.get({id: jwt_payload.id})
         .catch(err =>{
+            console.log("ERRORR");
             console.log(err);
             next(null, false);
         })
         .then(currentUser => {
+            console.log("SUCCESS");
             req.user = currentUser;
+            console.log(req.user);
             next(null, currentUser);
         });
 });
@@ -138,9 +141,9 @@ const productController = require('./controllers/product');
 app.get('/products', productController.readAll);
 
 app.get('/products/:id', productController.read);
-app.post('/products', /*passport.authenticate("jwt", {session: false}), */productController.create);
-app.put('/products', /*passport.authenticate("jwt", {session: false}), */productController.update);
-app.delete('/products/:id', /*passport.authenticate("jwt", {session: false}), */productController.delete);
+app.post('/products', passport.authenticate("jwt", {session: false}), productController.create);
+app.put('/products', passport.authenticate("jwt", {session: false}), productController.update);
+app.delete('/products/:id', passport.authenticate("jwt", {session: false}), productController.delete);
 
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

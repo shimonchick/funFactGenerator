@@ -14,7 +14,7 @@ export class ProductsComponent implements OnInit {
   constructor(private productService: ProductService) { }
 
   ngOnInit() {
-    this.products = this.productService.getProducts(0, 5);
+    this.products = this.productService.getProducts(0, 20);
   }
   onLike(product: Product) {
     this.productService
