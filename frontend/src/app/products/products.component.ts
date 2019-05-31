@@ -16,7 +16,7 @@ export class ProductsComponent implements OnInit {
   ngOnInit() {
     this.products = this.productService.getProducts(0, 20);
   }
-  onLike(product: Product) {
-    this.productService
+  async onLike(product: Product) {
+    // await this.productService.like(product.id);
   }
 }
