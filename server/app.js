@@ -147,6 +147,6 @@ app.post('/products', passport.authenticate("jwt", {session: false}), productCon
 app.put('/products', passport.authenticate("jwt", {session: false}), productController.update);
 app.delete('/products/:id', passport.authenticate("jwt", {session: false}), productController.delete);
 
-app.post('products/:id/like', productController.like)
+app.post('/products/:id/like', passport.authenticate("jwt", {session: false}), productController.like);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

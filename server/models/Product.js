@@ -1,13 +1,10 @@
 const mysql = require('mysql');
-
+const config = require('../config');
 module.exports = class Product {
     constructor() {
         this.connection = mysql.createConnection({
             multipleStatements: true,
-            host: 'localhost',
-            user: 'root',
-            password: '',
-            database: 'nodejs'
+            ...config.mysqlCredentials
         });
         this.connection.connect();
 
@@ -29,12 +26,12 @@ module.exports = class Product {
     get(id) {
         return new Promise(((resolve, reject) => {
             const sql = `
-            select Products.name, Products.id, Products.price, count(Likes.productId) as likes
+            select Products.name, Products.id, Products.price, Products.description, count(Likes.productId) as likes
                         from Likes
                         right join Products on Products.id = Likes.productId
                         WHERE id = ?
                         group by Products.id
-            `
+            `;
             this.connection.query(sql, id, function (err, rows, fields) {
                 if (err) reject(err);
                 resolve(rows[0] || null);
@@ -45,7 +42,7 @@ module.exports = class Product {
 
     getAll(query) {
         return new Promise((resolve, reject) => {
-            let sql = `select Products.name, Products.id, Products.price, count(Likes.productId) as likes
+            let sql = `select Products.name, Products.id, Products.price, Products.description, count(Likes.productId) as likes
                         from Likes
                         right join Products on Products.id = Likes.productId
                         group by Products.id `;      

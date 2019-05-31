@@ -1,14 +1,13 @@
 const mysql = require('mysql');
 
+const config = require('../config');
+
 module.exports = class User {
 
     constructor() {
         this.connection = mysql.createConnection({
             multipleStatements: true,
-            host: 'localhost',
-            user: 'root',
-            password: '',
-            database: 'nodejs'
+            ...config.mysqlCredentials
         });
         this.connection.connect();
 

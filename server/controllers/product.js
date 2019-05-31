@@ -81,8 +81,10 @@ module.exports.delete = function (req, res) {
 };
 
 module.exports.like = function(req, res) {
-    const productId = req.params['productId'];
-    const userId = req.params['userId'];
+    // const productId = req.body['productId'];
+    // const userId = req.body['userId'];
+    const productId = req.params.id;
+    const userId = req.user.id;
     // TODO get the user appropriately
     if (userId == null || productId == null) {
         res.status(400).send('Please provide a `productId` and a `userId` in the body');
@@ -93,6 +95,6 @@ module.exports.like = function(req, res) {
         res.status(500).send(err);
     })
     .then(() => {
-        res.send(200).send("OK");
+        res.status(200).send("OK");
     });
 };

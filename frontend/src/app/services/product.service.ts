@@ -2,9 +2,7 @@ import {Injectable, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Product} from '../models/product';
 
-const httpOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'}),
-};
+
 const textResponseType = {
   responseType: 'text' as 'json' // workaround
 };
@@ -12,10 +10,18 @@ const textResponseType = {
 @Injectable({
   providedIn: 'root'
 })
-export class ProductService implements OnInit{
+export class ProductService implements OnInit {
   private readonly productUrl = 'http://localhost:3000/products';  // URL to web api
-
+  private httpOptions;
   constructor(private http: HttpClient) {
+    const headerValue = 'Bearer ' + localStorage.getItem('token');
+    console.log(headerValue);
+    this.httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': headerValue
+      }),
+    };
   }
 
   async getProducts(page: number, limit: number) {
@@ -34,18 +40,14 @@ export class ProductService implements OnInit{
   async setProduct(product: Product) {
     console.log(product);
     const requestType = product.id !== undefined ? 'put' : 'post';
-    return await this.http[requestType]<Product>(this.productUrl, product, {...httpOptions, ...textResponseType}).toPromise();
+    return await this.http[requestType]<Product>(this.productUrl, product, {...this.httpOptions, ...textResponseType}).toPromise();
   }
 
   async deleteProduct(product: Product) {
     const deleteUrl = `${this.productUrl}/${product.id}`;
-    return await this.http.delete<Product>(deleteUrl, {...httpOptions, ...textResponseType}).toPromise();
+    return await this.http.delete<Product>(deleteUrl, {...this.httpOptions, ...textResponseType}).toPromise();
   }
 
   ngOnInit(): void {
-    const headerValue = 'Bearer ' + localStorage.getItem('token');
-    console.log(headerValue);
-    httpOptions.headers.append('Authorization', headerValue);
-
   }
 }
