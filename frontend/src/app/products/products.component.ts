@@ -2,6 +2,7 @@ import { ProductService } from '../services/product.service';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Product } from '../models/product';
+import {PageEvent} from "@angular/material";
 
 @Component({
   selector: 'app-products',
@@ -10,6 +11,8 @@ import { Product } from '../models/product';
 })
 export class ProductsComponent implements OnInit {
 
+  page: number;
+  limit: number;
   products: Promise<Product[]>;
   constructor(private productService: ProductService) { }
 
@@ -18,5 +21,11 @@ export class ProductsComponent implements OnInit {
   }
   async onLike(product: Product) {
     // await this.productService.like(product.id);
+  }
+
+  onPageChange($event: PageEvent) {
+    this.page = $event.pageIndex;
+    this.limit = $event.pageSize;
+    this.products = this.productService.getProducts(this.page, this.limit);
   }
 }
