@@ -12,7 +12,7 @@ module.exports = class User {
         this.connection.connect();
 
         this.connection.query('CREATE TABLE IF NOT EXISTS `Users`(`id` INTEGER NOT NULL auto_increment,' +
-            ' `name` VARCHAR(255) UNIQUE, `password` VARCHAR(255), `createdAt` DATETIME NOT NULL,' +
+            ' `name` VARCHAR(60) UNIQUE, `password` VARCHAR(255), `createdAt` DATETIME NOT NULL,' +
             '`updatedAt` DATETIME NOT NULL, PRIMARY KEY (`id`))');
 
     }

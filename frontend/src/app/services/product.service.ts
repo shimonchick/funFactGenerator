@@ -10,7 +10,7 @@ const textResponseType = {
 @Injectable({
   providedIn: 'root'
 })
-export class ProductService implements OnInit {
+export class ProductService {
   private readonly productUrl = 'http://localhost:3000/products';  // URL to web api
   private httpOptions;
   constructor(private http: HttpClient) {
@@ -29,12 +29,13 @@ export class ProductService implements OnInit {
       .append('page', page.toString())
       .append('limit', limit.toString());
     console.log('request made');
-    return await this.http.get<Product[]>(this.productUrl, {params}).toPromise();
+    return await this.http.get<Product[]>(this.productUrl, {params, ...this.httpOptions}).toPromise();
   }
 
   async getProduct(id: string) {
     const getUrl = `${this.productUrl}/${id}`;
-    return this.http.get<Product>(getUrl).toPromise();
+    console.log({...this.httpOptions, ...textResponseType});
+    return await this.http.get<Product>(getUrl, {...this.httpOptions}).toPromise();
   }
 
   async setProduct(product: Product) {
@@ -45,9 +46,11 @@ export class ProductService implements OnInit {
 
   async deleteProduct(product: Product) {
     const deleteUrl = `${this.productUrl}/${product.id}`;
-    return await this.http.delete<Product>(deleteUrl, {...this.httpOptions, ...textResponseType}).toPromise();
+    return await this.http.delete(deleteUrl, {...this.httpOptions, ...textResponseType}).toPromise();
   }
 
-  ngOnInit(): void {
+  async like(id: string) {
+    const likeUrl = `${this.productUrl}/${id}/like`;
+    return await this.http.post(likeUrl, {}, {...this.httpOptions, ...textResponseType}).toPromise();
   }
 }

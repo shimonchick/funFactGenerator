@@ -1,9 +1,9 @@
-import { ProductService } from './../services/product.service';
-import { Observable } from 'rxjs';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Product } from '../models/product';
-import { routerNgProbeToken } from '@angular/router/src/router_module';
+import {ProductService} from '../services/product.service';
+import {Observable} from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Product} from '../models/product';
+import {routerNgProbeToken} from '@angular/router/src/router_module';
 
 @Component({
   selector: 'app-product-details',
@@ -23,7 +23,7 @@ export class ProductDetailsComponent implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.productService.getProduct(id).then(product => {
+      this.productService.getProduct(id).then((product: any) => {
         this.product = product;
         console.log(product);
       });

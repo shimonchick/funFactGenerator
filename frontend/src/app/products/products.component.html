@@ -1,33 +1,34 @@
-<div>
-    <a mat-raised-button color="primary" routerLink="/create">Create Product</a>
-</div>
-<div fxLayout="row wrap" fxLayoutAlign="space-around center" #container id="container">
-    <div class="list-item" *ngFor="let product of products | async" fxFlex="25%"
-        fxFlex.md="33%" fxFlex.sm="50%" fxFlex.xs="100%" [routerLink]="['/products', product.id]">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>{{product.name}}</mat-card-title>
-                <!-- <mat-card-subtitle>Subtitle</mat-card-subtitle> -->
-            </mat-card-header>
-            <!-- <img matCardImage src="Card wide image source"> -->
-            <mat-card-content>
-                Text description:
-                {{product | json}}
-            </mat-card-content>
-            <mat-card-actions align="start">
-                <button mat-button [routerLink]="[product.id]">Action1</button>
-
-            </mat-card-actions>
-            <mat-card-footer>
-                <a mat-icon-button (click)="onLike(product)">
-                    <mat-icon class="mat-18">like</mat-icon>
-                </a>
-            </mat-card-footer>
-        </mat-card>
-    </div>
+<div fxLayout="row wrap" fxLayoutAlign="space-around center" id="container">
+  <div class="list-item" *ngFor="let product of products | async" fxFlex="25%"
+       fxFlex.md="33%" fxFlex.sm="50%" fxFlex.xs="100%">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{product.name}}</mat-card-title>
+        <!-- <mat-card-subtitle>Subtitle</mat-card-subtitle> -->
+      </mat-card-header>
+      <!-- <img matCardImage src="Card wide image source"> -->
+      <mat-card-content>
+        Description:
+        <pre style="white-space: pre-wrap">{{product | json}}</pre>
+      </mat-card-content>
+      <mat-card-actions fxLayout>
+        <button mat-button [routerLink]="[product.id]">View</button>
+        <div fxFlex></div>
+        <button mat-icon-button (click)="onLike(product)">
+          <mat-icon *ngIf="product.liked">thumb_down</mat-icon>
+          <mat-icon *ngIf="!product.liked">thumb_up</mat-icon>
+        </button>
+      </mat-card-actions>
+      <!--            <mat-card-footer>-->
+      <!--                <a mat-icon-button (click)="onLike(product)">-->
+      <!--                    <mat-icon class="mat-18">like</mat-icon>-->
+      <!--                </a>-->
+      <!--            </mat-card-footer>-->
+    </mat-card>
+  </div>
 </div>
 <mat-paginator [length]="100"
                [pageSize]="10"
                [pageSizeOptions]="[5, 10, 25, 100]"
-                (page)="onPageChange($event)">
+               (page)="onPageChange($event)">
 </mat-paginator>

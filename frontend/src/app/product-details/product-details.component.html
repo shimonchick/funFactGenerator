@@ -1,6 +1,6 @@
 <div class="example-container" fxLayout="column" fxLayoutAlign="center center">
   <div style="width: unset"><h1>Product Form</h1></div>
-  <div *ngIf="product?.id">
+  <div *ngIf="product?.id" style="text-align: center;">
     <span>Editing id: {{product.id}}</span>
   </div>
   <form (ngSubmit)="onSubmit()" fxLayout="column" fxLayoutAlign="center center">
@@ -20,6 +20,6 @@
 
   </form>
 </div>
-<div *ngIf="product?.id">
+<div *ngIf="product?.id" style="text-align: center">
   <button mat-button (click)="delete(product)">Delete Product</button>
 </div>

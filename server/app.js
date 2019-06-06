@@ -139,9 +139,9 @@ app.post('/login', async function (req, res) {
 
 const productController = require('./controllers/product');
 
-app.get('/products', productController.readAll);
+app.get('/products', passport.authenticate("jwt", {session: false}), productController.readAll);
 
-app.get('/products/:id', productController.read);
+app.get('/products/:id', passport.authenticate("jwt", {session: false}), productController.read);
 
 app.post('/products', passport.authenticate("jwt", {session: false}), productController.create);
 app.put('/products', passport.authenticate("jwt", {session: false}), productController.update);

@@ -20,7 +20,8 @@ export class ProductsComponent implements OnInit {
     this.products = this.productService.getProducts(0, 20);
   }
   async onLike(product: Product) {
-    // await this.productService.like(product.id);
+    await this.productService.like(product.id);
+    product.liked = !product.liked;
   }
 
   onPageChange($event: PageEvent) {

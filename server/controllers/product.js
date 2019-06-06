@@ -24,7 +24,7 @@ module.exports.create = function (req, res) {
 };
 module.exports.readAll = function (req, res) {
     const {name, description, price, limit, page} = req.query;
-    productModel.getAll({name: name, description: description, price: price, page: page, limit: limit})
+    productModel.getAll({name: name, description: description, price: price, page: page, limit: limit}, req.user.id)
         .catch(err => {
             console.log(err);
             res.status(500).send(err);
@@ -35,7 +35,7 @@ module.exports.readAll = function (req, res) {
 };
 module.exports.read = function (req, res) {
     if (req.params.id != null) {
-        productModel.get(req.params.id)
+        productModel.get(req.params.id, req.user.id)
             .catch(err => {
                 console.log(err);
                 res.status(500).send(err);

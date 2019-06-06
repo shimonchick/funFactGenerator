@@ -21,34 +21,58 @@ module.exports = class Product {
 
     }
 
-    
 
-    get(id) {
+    get(id, userId) {
         return new Promise(((resolve, reject) => {
-            const sql = `
-            select Products.name, Products.id, Products.price, Products.description, count(Likes.productId) as likes
+            let sql = ` select Products.name,
+                               Products.id,
+                               Products.price,
+                               Products.description,
+                               count(Likes.productId) as likes,
+                               exists(select *
+                                      from Likes
+                                      where Likes.productId = Products.id
+                                        and Likes.userId = ?) as liked
                         from Likes
-                        right join Products on Products.id = Likes.productId
-                        WHERE id = ?
-                        group by Products.id
-            `;
-            this.connection.query(sql, id, function (err, rows, fields) {
+                                 right join Products on Products.id = Likes.productId
+                                 left join Users on Likes.userId = Users.id
+                        where Products.id = ?
+                        group by Products.id`;
+            // const sql = `
+            // select Products.name, Products.id, Products.price, Products.description, count(Likes.productId) as likes
+            //             from Likes
+            //             right join Products on Products.id = Likes.productId
+            //             WHERE id = ?
+            //             group by Products.id
+            // `;
+            this.connection.query(sql, [userId, id], function (err, rows, fields) {
                 if (err) reject(err);
+                console.log('!!!!!!!!!!!!!!!!!')
+                console.log(rows);
                 resolve(rows[0] || null);
             })
 
         }));
     }
 
-    getAll(query) {
+    getAll(query, userId) {
         return new Promise((resolve, reject) => {
-            let sql = `select Products.name, Products.id, Products.price, Products.description, count(Likes.productId) as likes
+            let sql = ` select Products.name,
+                               Products.id,
+                               Products.price,
+                               Products.description,
+                               count(Likes.productId) as likes,
+                               exists(select *
+                                      from Likes
+                                      where Likes.productId = Products.id
+                                        and Likes.userId = ?) as liked
                         from Likes
-                        right join Products on Products.id = Likes.productId
-                        group by Products.id `;      
+                                 right join Products on Products.id = Likes.productId
+                                 left join Users on Likes.userId = Users.id
+                        group by Products.id`;
             console.log("query: " + query);
             if (query) {
-                const { name, description, price, page, limit } = query;
+                const {name, description, price, page, limit} = query;
                 console.log("page: " + page + "limit: " + limit);
                 // if (name) {
                 //     sql += ' WHERE name = ' + this.connection.escape(name);
@@ -64,8 +88,11 @@ module.exports = class Product {
                     sql += ` LIMIT ${pageNum * limitNum},${limitNum}`;
                 }
             }
-            const mysqlQuery = this.connection.query(sql, function (err, rows, fields) {
+            const mysqlQuery = this.connection.query(sql, [userId], function (err, rows, fields) {
                 if (err) reject(err);
+                // rows.map ((product) => {
+                //     return product.liked =
+                // })
                 resolve(rows || null);
             });
             console.log(mysqlQuery.sql);
@@ -91,7 +118,7 @@ module.exports = class Product {
         }));
     }
 
-    update({ id, description, name, price }) {
+    update({id, description, name, price}) {
         return new Promise(((resolve, reject) => {
             const updatedAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
             this.connection.query('UPDATE Products SET name = ?, price = ?, description = ?, updatedAt = ? WHERE id = ?',

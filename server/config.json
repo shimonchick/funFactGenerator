@@ -2,7 +2,7 @@
   "secretOrKey": "A+F9kTyWIOqWUcf8CuTOcu5GicVun9y4qYrgooTbYtHWJac1J8hCmC4PHzyER7rsX9/hv4mL7uBzJ+jwN3rL6A==",
   "mysqlCredentials": {
       "database": "nodejs",
-      "password": "",
+      "password": "password",
       "host": "localhost",
       "user": "root"
   }

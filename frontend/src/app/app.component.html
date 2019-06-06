@@ -1,5 +1,9 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" fxLayout>
   <span>SMDB project</span>
+  <div fxFlex></div>
+  <div>
+    <a mat-raised-button routerLink="/create">Create Product</a>
+  </div>
 </mat-toolbar>
 <router-outlet></router-outlet>
